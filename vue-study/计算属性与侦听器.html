@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>计算属性与侦听器</title>
+    <script src="../node_modules/vue/dist/vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <h1>计算属性</h1>
+        <div>
+            <p>Computed reversed Message: {{reverseMessage}}</p>
+            <p>Computed reversed Message: {{thisMessage}}</p>
+            <input type="text" @input="changeInput">
+        </div>
+        <h1>侦听器</h1>
+        <div>
+            <p>{{watchValue1}}</p>
+            <p>{{watchValue2}}</p>
+        </div>
+    </div>
+    <script>
+        /**
+         * 1.计算属性
+         * 计算属性是基于他们的响应式依赖进行缓存的，响应式数据变化才会触发 computed 里方法的执行
+         * set  get 方法
+         * 2.侦听器
+         * 侦听器如何侦听的值之间相互引用的话很容易造成栈溢出
+        */
+        const vm = new Vue({
+            el: "#app",
+            data: {
+                message: "Computed",
+                watchValue1: "value1",
+                watchValue2: "value2"
+            },
+            computed: {
+                // 计算属性，默认值提供 setter 方法
+                reverseMessage: function () {
+                    return this.message.split('').reverse().join('')
+                },
+                thisMessage: {
+                    // getter
+                    get: function () {
+                        return this.message;
+                    },
+                    // setter
+                    set: function (val) {
+                        setTimeout(() => {
+                            this.message = val;
+                        }, 2000);
+                    }
+                }
+            },
+            watch: {
+                watchValue1: function (val) {
+                    console.log("watchValue1", val);
+                    this.watchValue2 = val;
+                },
+                watchValue2: function (val) {
+                    console.log("watchValue2", val);
+                    this.watchValue1 = val;
+                }
+            },
+            methods: {
+                changeInput(e) {
+                    // this.thisMessage = e.target.value;
+                    this.watchValue1 = e.target.value;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

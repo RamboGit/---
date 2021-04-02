@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>组件基础</title>
+    <script src="../node_modules/vue/dist/vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <h1> 组件基础 </h1>
+        <button-counter></button-counter>
+        <h2>通过 props 向子组件传递数据</2>
+            <blog-post title="子组件传递1" v-bind:bposts="posts"></blog-post>
+            <parent-component v-on:summit-event="summitEvent">监听子组件的事件</parent-component>
+            <custom-input v-model="searchText">{{searchText}}</custom-input>
+    </div>
+    <script>
+        // 基本组件 组件注册需在 vue 初始化之前注册
+        Vue.component('button-counter', {
+            data: function () {
+                return {
+                    content: 'button 组件'
+                }
+            },
+            methods: {
+            },
+            template: `<div>{{content}}
+                <button-li>sdfsdf</button-li>
+                </div>`
+        });
+        Vue.component('button-li', {
+            template: `<div>
+                <button v-on:click="$emit('summbit-text')">触发事件</button>
+                <slot></slot>
+                </div>`
+        })
+        // 通过 props 向子组件传递数据
+        Vue.component('blog-post', {
+            props: ['title', "bposts"],
+            template: `<div><h3>{{ title }}</h3><ul>
+                    <li v-for="post in bposts">{{post.title}}</li>
+                </ul></div>    
+                `
+        })
+
+        // 监听子组件的事件
+        Vue.component('parent-component', {
+            methods: {
+            },
+            template: `<div><slot></slot><button v-on:click="$emit('summit-event', $event)">summitEvents</button></div>`
+        })
+
+        // 在组件上使用 v-model
+        Vue.component('custom-input', {
+            props: ['value'],
+            template: `<div>
+                <slot></slot>
+                <input v-bind:value="value"
+                       v-on:input="$emit('input', $event.target.value)"/>
+                </div>`
+        })
+
+        const vm = new Vue({
+            el: "#app",
+            data: {
+                posts: [
+                    { id: 1, title: 'My journey with Vue' },
+                    { id: 2, title: 'Blogging with Vue' },
+                    { id: 3, title: 'Why Vue is so fun' }
+                ],
+                searchText: "自定义组件使用 v-model"
+            },
+            methods: {
+                summitEvent: function (e) {
+                    console.log('sumitEvent', e)
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

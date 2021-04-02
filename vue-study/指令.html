@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>指令学习</title>
+    <script src="../node_modules/vue/dist/vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <span>{{message}}</span>
+        <button v-on:click="reverseMessage">反转字符串</button>
+        <input type="text" v-bind:value="message" v-on:input="changeMessage">
+        <h1>1. 插值</h1>
+        <div>
+            <p v-text="text"></p>
+            <div v-html="html"></div>
+            <div v-bind:id="bindId">动态绑定元素属性值</div>
+        </div>
+        <h1>2. 指令</h1>
+        <div>
+            <p v-bind:[attributename]="url">动态绑定属性</p>
+            <button v-on:[event]="events">动态绑定事件 name</button>
+            <button v-on:click="event">怎么查找变量</button>
+        </div>
+    </div>
+    <script>
+        /**
+         * v-model 是语法糖 对应的是 v-bind:attr 和 v-on:event 的结合
+         * 1. 插值 
+         * 文本 {{name}}
+         * html v-html
+         * text v-text
+         * v-bind:attr  绑定属性值
+         * 使用 JavaScript 表达式 ：注意表达式只能包含单个表达式
+         * 2. 指令
+         * v-attribute 其 attribute 的预期值是单个 JavaScript 表达式(v-for是个例外)
+         * v-if
+         * v-show
+         * v-bind:attr 或者 v-bind:[attr]  Vue 会把 attr 自定全部转换为小写   对应的是 data-
+         * v-on:attr  或者 v-on:[attr]
+         * 
+         * 3. 问题
+         * Vue是如何动态查找变量和方法的，何时去 data 里面查找何时去 methods 里面查找
+        */
+        const vm = new Vue({
+            el: "#app",
+            data: {
+                msg: "模板语法",
+                message: "Hello World",
+                html: `<div>v-html 插入 html内容</div>`,
+                text: "插入 text 文本",
+                bindId: "bindId",
+                attributename: "lsd",
+                url: 'href',
+                event: "click"
+            },
+            methods: {
+                reverseMessage() {
+                    this.message = this.message.split("").reverse().join("");
+                },
+                changeMessage(e) {
+                    this.message = e.target.value;
+                    this.attributeName = e.target.value;
+                },
+                event(e) {
+                    console.log('同属性名如何查找', e);
+                },
+                events(e) {
+                    console.log('events', e.target);
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

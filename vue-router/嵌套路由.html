@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue-router</title>
+    <script src="../node_modules/vue/dist/vue.min.js"></script>
+    <script src="../node_modules/vue-router/dist/vue-router.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <h1> 动态路由匹配 </h1>
+        <router-link to="/user/name">Go to User</router-link>
+        <router-link to="/user/change">Go to Change</router-link>
+        <router-link to="/user/name/profile">Go to profile</router-link>
+        <router-link :to="path">Go to path</router-link>
+        <input v-model="path">
+        <router-view></router-view>
+    </div>
+    <script>
+        // 1. 定义组件
+        const User = {
+            template: `<div>
+                <h2>{{ $route.params.id }}</h2>
+                <router-view></router-view>
+                </div>`,
+        }
+        const NotFound = {
+            template: '<div>Not Founcd</div>'
+        }
+        // 定义子组件
+        const UserProfile = { template: '<div>User Profile</div>' }
+        const UserPosts = { template: '<div>User Posts</div>' }
+
+        // 2. 定义路由
+        // 路由优先级是谁先定义谁的优先级就高
+        const routes = [
+            {
+                path: '/user/:id',
+                component: User,
+                children: [
+                    { path: 'profile', component: UserProfile },
+                    { path: 'posts', component: UserPosts }
+                ]
+            },
+            { path: '*', component: NotFound },
+            // { path: '/user-*' }
+        ]
+
+        // 3. 创建 router 实例
+        const router = new VueRouter({ routes, mode: 'history' })
+
+        const vm = new Vue({
+            el: "#app",
+            router,
+            data: {
+                path: "url"
+            }
+        });
+    </script>
+</body>
+
+</html>

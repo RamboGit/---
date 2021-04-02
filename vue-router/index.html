@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue-router</title>
+    <script src="../node_modules/vue/dist/vue.min.js"></script>
+    <script src="../node_modules/vue-router/dist/vue-router.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <h1> vue-router </h1>
+        <p>
+            <router-link to="/foo">Go to Foo</router-link>
+            <router-link to="/bar">Go to Bar</router-link>
+        </p>
+        <router-view></router-view>
+    </div>
+    <script>
+        /**
+         * 通过 this.$router 在任意组件访问路由器
+         * 通过 this.$route 访问当前路由
+        */
+        // 1. 定义组件
+        const Foo = { template: '<div>foo</div>' }
+        const Bar = { template: '<div>bar</div>' }
+
+        // 2. 定义路由
+        const routes = [
+            { path: '/foo', component: Foo },
+            { path: '/bar', component: Bar }
+        ]
+
+        // 3. 创建 router 实例
+        const router = new VueRouter({ routes, mode: 'history' })
+
+        const vm = new Vue({
+            el: "#app",
+            router
+        });
+    </script>
+</body>
+
+</html>
